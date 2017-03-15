@@ -41,7 +41,6 @@ if __name__ == '__main__':
     print ("輸入資料建立模型....")
     #Predict Output
     print ("輸入test.csv 建立預測")
-    X_all=np.r_[X_train, X_test]
     lowest_bic = np.infty
     bic = []
     n_components_range = range(1, 7)
