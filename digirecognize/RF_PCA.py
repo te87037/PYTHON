@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 17 09:27:16 2017
-
-@author: acer
-"""
-
-#import library
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -13,7 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import linear_model
 from sklearn.decomposition import PCA
-
+from sklearn import svm
 PCA_COMPONENTS = 100
 
 
@@ -23,12 +15,12 @@ def doWork(train, labels, test):
 
     print ("Fitting PCA. Components: %d" % PCA_COMPONENTS)
     pca = PCA(n_components=PCA_COMPONENTS).fit(X_train)
-
+    
     print ("Reducing training to %d components" % PCA_COMPONENTS)
     X_train_reduced = pca.transform(X_train)
 
-    print ("Fitting kNN with k=10, kd_tree")
-    RF = RandomForestClassifier(n=1000)
+    print ("Fitting RandomForest")
+    RF = RandomForestClassifier()
     print (RF.fit(X_train_reduced, labels))
 
     print ("Reducing test to %d components" % PCA_COMPONENTS)
@@ -44,11 +36,16 @@ def doWork(train, labels, test):
 
 
 def write_to_file(predictions):
-    f = open("output-pca-knn-skilearn-v3.csv", "w")
-    for p in predictions:
-        f.write(str(p))
-        f.write("\n")
-    f.close()
+    id = []
+    count = 0
+    for i in predictions:
+        count = count+1;
+        id.append(count)
+    submission = pd.DataFrame({
+        "ImageId": id,
+        "Label": predictions
+    })
+    submission.to_csv("kaggle.csv", index=False)
 
 
 if __name__ == '__main__':
@@ -61,4 +58,7 @@ if __name__ == '__main__':
     
     test = pd.read_csv("test.csv")
     print (doWork(train, labels, test))
-
+# Write to the log:
+print("Training set has {0[0]} rows and {0[1]} columns".format(train.shape))
+print("Test set has {0[0]} rows and {0[1]} columns".format(test.shape))
+# Any files you write to the current directory get shown as outputs
